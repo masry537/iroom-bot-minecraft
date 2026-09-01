@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>IRooM - لوحة تحكم البوتات الذكية</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #141416; color: #ffffff; margin: 0; padding: 20px; }
+        .container { max-width: 950px; margin: 0 auto; background: #1e1e24; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); border-top: 5px solid #ff6f00; }
+        .header { text-align: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid #2d2d35; }
+        .header h1 { margin: 0; color: #ff6f00; font-size: 2.8rem; letter-spacing: 2px; }
+        .header p { margin: 5px 0 0 0; color: #a0a0ab; font-size: 1rem; }
+        .section-title { color: #ffffff; border-right: 4px solid #ff6f00; padding-right: 10px; margin-top: 30px; font-size: 1.25rem; }
+        
+        .login-screen { text-align: center; padding: 50px 20px; display: block; }
+        .btn-google { background: #ffffff; color: #141416; font-size: 1.1rem; padding: 15px 25px; border-radius: 30px; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(255,255,255,0.1); border: none; cursor: pointer; font-weight: bold; transition: 0.3s; user-select: none; }
+        .btn-google:hover { background: #ff6f00; color: white; transform: translateY(-3px); }
+        
+        .main-dashboard { display: none; }
+        .user-bar { display: flex; justify-content: space-between; align-items: center; background: #25252e; padding: 12px 20px; border-radius: 8px; margin-bottom: 25px; border-right: 4px solid #ff6f00; }
+        .form-group, .chat-group { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+        input, select, button { padding: 14px; border-radius: 8px; border: none; font-size: 1rem; outline: none; }
+        input, select { background: #2d2d35; color: #ffffff; border: 1px solid #3e3e4a; transition: 0.3s; }
+        input:focus, select:focus { border-color: #ff6f00; box-shadow: 0 0 8px rgba(255,111,0,0.4); }
+        button { background: #ff6f00; color: #ffffff; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #ffffff; color: #ff6f00; transform: translateY(-2px); }
+        .btn-stop { background: #ef4444; }
+        .btn-stop:hover { background: #ffffff; color: #ef4444; }
+        .btn-delete { background: #dc2626; margin-right: 8px; }
+        .btn-delete:hover { background: #ffffff; color: #dc2626; }
+        
+        .server-list { background: #25252e; padding: 15px; border-radius: 10px; margin-bottom: 25px; border: 1px solid #2d2d35; }
+        .server-item { padding: 15px; border-bottom: 1px solid #2d2d35; background: #1e1e24; margin-bottom: 10px; border-radius: 8px; }
+        .server-row { display: flex; justify-content: space-between; align-items: center; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; }
+        .badge-java { background: #3b82f6; color: white; }
+        .badge-bedrock { background: #10b981; color: white; }
+        .status-text { font-weight: bold; color: #ff6f00; margin-left: 10px; }
+        .console { background: #0c0c0e; color: #ffae66; font-family: monospace; padding: 20px; height: 220px; overflow-y: auto; border-radius: 10px; border: 1px solid #2d2d35; text-align: left; direction: ltr; margin-bottom: 20px; }
+        
+        .ad-box-clean { text-align: center; margin: 20px 0; background: #25252e; padding: 15px; border-radius: 8px; border: 1px dashed #ff6f00; color: #aaa; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>IRooM</h1>
+        <p>لوحة التحكم السحابية بنظام ربط حسابات Google الموثق 📺</p>
+    </div>
+
+    <!-- 📢 مساحة إعلانية علوية جاهزة لربط Monetag -->
+    <div class="ad-box-clean">
+        <small style="color: #ff6f00; display: block; margin-bottom: 5px;">إعلان مُمول AD</small>
+        مساحة إعلانية جاهزة لربط شفرتك الخاصة لضخ الأرباح على InstaPay 💰
+    </div>
+
+    <!-- 🔐 شاشة قفل تسجيل الدخول بجوجل الصارمة والحقيقية -->
+    <div class="login-screen" id="loginScreen">
+        <h3>مرحباً بك في IRooM! برجاء تسجيل الدخول لحفظ سيرفراتك الشخصية أونلاين</h3>
+        <button class="btn-google" onclick="loginWithGoogleReal()">
+            <img src="https://gstatic.com" alt="Google" width="22">
+            تسجيل الدخول الآمن بواسطة Google
+        </button>
+    </div>
+
+    <!-- 🟧 اللوحة الرئيسية الشغالة (تفتح بعد التحقق من حساب جوجل الحقيقي الفعلي فقط) -->
+    <div class="main-dashboard" id="mainDashboard">
+        <div class="user-bar">
+            <span>👤 الحساب النشط: <b id="userName" style="color: #ff6f00;"></b> (<span id="userEmail"></span>)</span>
+            <button onclick="logoutUserReal()" style="padding: 6px 15px; background: #ef4444; font-size: 0.9rem;">تسجيل الخروج 🚪</button>
+        </div>
+
+        <h3 class="section-title">➕ إضافة سيرفر جديد وحفظه في حسابك</h3>
+        <div class="form-group">
+            <input type="text" id="host" style="flex: 2.5;" placeholder="آي بي السيرفر (Host / DynIP)">
+            <input type="number" id="port" style="flex: 1;" value="25565" placeholder="البورت">
+            <input type="text" id="botName" style="flex: 1.5;" value="IRooM_Bot" placeholder="اسم البوت">
+            <select id="type" style="flex: 1.2;">
+                <option value="java">☕ نسخة جافا</option>
+                <option value="bedrock">📱 نسخة بيدروك</option>
+            </select>
+            <button onclick="addServer()">حفظ السيرفر في حسابي 💾</button>
+        </div>
+
+        <h3 class="section-title">📋 سيرفراتك المحفوظة أونلاين وأزرار الفحص الفعلي 📡</h3>
+        <div class="server-list" id="serversContainer">جاري تحميل بيانات حسابك الموثق...</div>
+
+        <h3 class="section-title">💬 التحكم بالشات الموحد وإرسال الأوامر</h3>
+        <div class="chat-group">
+            <input type="text" id="chatMessage" placeholder="اكتب شات أو أمر السيرفر..." style="flex: 4;">
+            <button onclick="sendChat()">إرسال الشات الموحد 📤</button>
+        </div>
+
+        <h3 class="section-title">💻 شاشة الـ Console ومراقبة النشاط المباشر</h3>
+        <div class="console" id="console"></div>
+    </div>
+</div>
+
+<!-- استدعاء حزم جوجل الرسمية للأمان والمصادقة -->
+<script src="https://gstatic.com"></script>
+<script src="https://gstatic.com"></script>
+
+<script>
+    // 🔐 شفرة Google Firebase الحقيقية والموثقة الخاصة بمشروعك الفعلي IRooM
+    const firebaseConfig = {
+      apiKey: "AIzaSyA0RQ2MrzhYJu0OYSjR9YERkPaont3W2N0",
+      authDomain: "://firebaseapp.com",
+      projectId: "iroom-51b82",
+      storageBucket: "iroom-51b82.firebasestorage.app",
+      messagingSenderId: "344549416254",
+      appId: "1:344549416254:web:3a4dca792ef9fb36e0206f"
+    };
+    
+    // تهيئة مكتبات جوجل الرسمية للتحقق الصارم
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    
+    let activeUser = null;
+    const baseUrl = window.location.origin;
+
+    // دالة التحويل المباشر والصارم ترليون في المائة لصفحة إيميلات جوجل الرسمية
+    function loginWithGoogleReal() {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithRedirect(provider);
+    }
+
+    function logoutUserReal() {
+        auth.signOut().then(() => {
+            location.reload();
+        });
+    }
+
+    // مراقبة حالة حساب جوجل الفعلي بشكل صارم ومنع أي دخول وهمي
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            activeUser = user;
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainDashboard').style.display = 'block';
+            document.getElementById('userName').innerText = user.displayName || "مستخدم موثق";
+            document.getElementById('userEmail').innerText = user.email;
+            
+            setInterval(updateDashboard, 1000);
+            updateDashboard();
+        } else {
+            activeUser = null;
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('mainDashboard').style.display = 'none';
+        }
+    });
+
+    async function updateDashboard() {
+        if (!activeUser) return;
+        try {
+            const res = await fetch(`${baseUrl}/api/data?uid=${activeUser.uid}`);
+            const data = await res.json();
+            const container = document.getElementById('serversContainer');
+            let htmlContent = '';
+            
+            data.servers.forEach((srv, index) => {
+                const botInfo = data.activeBots[index] || { status: "مطفأ 🔴", pos: "غير معروف" };
+                let actionButtons = `
+                    <button onclick="startBot(${index})">تشغيل البوت 🚀</button>
+                    <button class="btn-delete" onclick="deleteServer(${index}, '${activeUser.uid}')">حذف 🗑️</button>
+                `;
+                
+                if (botInfo.status === "متصل 🟢") {
+                    actionButtons = `<button class="btn-stop" onclick="stopBot(${index})">إيقاف البوت 🛑</button>`;
+                }
+
+                let statusStyle = "color: #ff6f00;";
+                if (botInfo.status.includes("فشل") || botInfo.status.includes("❌")) {
+                    statusStyle = "color: #ef4444; font-weight: bold;";
+                }
+
+                const typeBadge = srv.type === 'java' ? '<span class="badge badge-java">Java</span>' : '<span class="badge badge-bedrock">Bedrock</span>';
+
+                htmlContent += `
+                    <div class="server-item">
+                        <div class="server-row">
+                            <span>${typeBadge} <b>${srv.host}:${srv.port}</b> <span class="status-text" style="${statusStyle}">◀ الحالة: ${botInfo.status}</span></span>
+                            <div>${actionButtons}</div>
+                        </div>
+                    </div>`;
+            });
+
+            container.innerHTML = htmlContent || 'لا يوجد سيرفرات محفوظة في حسابك حالياً.';
+            document.getElementById('console').innerHTML = data.logs.map(log => `> ${log}`).join('<br>');
+        } catch (e) {}
+    }
+
+    async function addServer() {
+        const host = document.getElementById('host').value.trim();
+        const port = document.getElementById('port').value.trim();
+        const botName = document.getElementById('botName').value.trim();
+        const type = document.getElementById('type').value;
+        if(!host || !activeUser) return alert('برجاء التأكد من البيانات');
+        
+        await fetch(`${baseUrl}/api/add-server`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ host, port, botName, type, userId: activeUser.uid })
+        });
+        document.getElementById('host').value = '';
+        updateDashboard();
+    }
+
+    async function deleteServer(index, uid) {
+        if(confirm("هل أنت متأكد من حذف هذا السيرفر من حسابك؟")) {
+            await fetch(`${baseUrl}/api/delete-server`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ index, uid })
+            });
+            updateDashboard();
+        }
+    }
+
+    async function startBot(index) { await fetch(`${baseUrl}/api/start-bot`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ index }) }); }
+    async function stopBot(index) { await fetch(`${baseUrl}/api/stop-bot`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ index }) }); }
+</script>
+</body>
+</html>
+Z

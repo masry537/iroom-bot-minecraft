@@ -1,0 +1,22 @@
+[
+  {
+    "host": "masry2.aternos.me",
+    "port": "64608",
+    "botName": "IRooM_BOT",
+    "type": "java"
+  },
+  {
+    "host": "masry2.aternos.me",
+    "port": "64608",
+    "botName": "IRooM_Bot2",
+    "type": "java"
+  },
+  {
+    "owner": "user_pnsbe",
+    "name": "IRooM_Bot",
+    "port": 25565,
+    "ip": "ethgyj",
+    "type": "Java",
+    "active": false
+  }
+]

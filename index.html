@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IRooM Elite - لوحة تحكم البوتات</title>
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        :root {
+            --bg-dark: #0a0a0c;
+            --box-bg: #141418;
+            --primary-orange: #ff5500;
+            --glow-orange: rgba(255, 85, 0, 0.4);
+            --text-main: #f3f4f6;
+            --text-muted: #71717a;
+            --neon-green: #39ff14;
+            --neon-red: #ff3333;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 25px;
+        }
+
+        .container { max-width: 1150px; margin: 0 auto; }
+
+        .main-title {
+            text-align: center;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--primary-orange);
+            margin-bottom: 2px;
+            text-shadow: 0 0 15px var(--glow-orange);
+            animation: pulseGlow 3s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { text-shadow: 0 0 10px var(--glow-orange); }
+            100% { text-shadow: 0 0 25px rgba(255, 85, 0, 0.8); }
+        }
+
+        .sub-title {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 35px;
+        }
+
+        .ad-text {
+            text-align: center;
+            color: var(--primary-orange);
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        .section-box {
+            background-color: var(--box-bg);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid #222227;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+
+        .box-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .box-title::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 22px;
+            background-color: var(--primary-orange);
+            border-radius: 2px;
+            box-shadow: 0 0 8px var(--primary-orange);
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: 2fr 1fr 2fr 1.2fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-inputs { grid-template-columns: 1fr; }
+        }
+
+        input, select {
+            background-color: #1a1a22;
+            border: 1px solid #2d2d3d;
+            color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        input:focus, select:focus { outline: none; border-color: var(--primary-orange); }
+
+        .btn-orange {
+            background-color: var(--primary-orange);
+            color: #ffffff;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.05rem;
+            width: 100%;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-orange:hover { background-color: #e64d00; }
+
+        .servers-list { display: flex; flex-direction: column; gap: 15px; }
+
+        .server-card {
+            background-color: #18181f;
+            padding: 18px 25px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #272732;
+        }
+
+        .server-info { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+
+        .badge {
+            background-color: #1e3a8a;
+            color: #93c5fd;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .status-indicator { font-weight: 600; display: flex; align-items: center; }
+
+        .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        .server-actions { display: flex; gap: 10px; }
+
+        .btn-action {
+            cursor: pointer;
+            font-weight: 700;
+            border: none;
+            padding: 11px 20px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+        }
+
+        .btn-start { background-color: #272732; border: 1px solid #3f3f46; }
+        .btn-start.active-bot { background-color: var(--primary-orange); }
+        .btn-delete { background-color: #7f1d1d; border: 1px solid #b91c1c; }
+
+        .chat-input-group { display: flex; gap: 15px; margin-top: 5px; }
+        .chat-input-group input { text-align: right; padding-right: 20px; }
+
+        .console-container {
+            background-color: #050507;
+            border: 1px solid #1a1a24;
+            border-radius: 8px;
+            padding: 18px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            direction: ltr;
+            max-height: 220px;
+            overflow-y: auto;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.9);
+        }
+
+        .console-line {
+            color: var(--neon-green);
+            margin: 6px 0;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        .console-line.system { color: var(--primary-orange); }
+        .console-line.error { color: var(--neon-red); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="main-title">IRooM</div>
+        <div class="sub-title">لوحة التحكم الفائقة وبث شاشات ومنظور البوتات النشطة فقط</div>
+        
+        <div class="ad-text">إعلان ممول AD</div>
+
+        <!-- إضافة بوت جديد -->
+        <div class="section-box">
+            <div class="box-title">إضافة سيرفر جديد وحفظه</div>
+            <div class="grid-inputs">
+                <input type="text" id="botName" placeholder="اسم البوت مثلاً IRooM_Bot" value="IRooM_Bot">
+                <input type="text" id="serverPort" placeholder="25565" value="25565">
+                <input type="text" id="serverIp" placeholder="آي بي السيرفر (Host / DynIP)">
+                <select id="serverType">
+                    <option value="Java">نسخة جافا ☕</option>
+                    <option value="Bedrock">نسخة بيدروك 📱</option>
+                </select>
+            </div>
+            <button class="btn-orange" onclick="addServer()">
+                <i class="fa-solid fa-floppy-disk"></i> حفظ السيرفر والتشغيل الفوري
+            </button>
+        </div>
+
+        <!-- السيرفرات المحفوظة -->
+        <div class="section-box">
+            <div class="box-title">السيرفرات المحفوظة وشاشات البث المباشر والتحكم بالحركة</div>
+            <div class="servers-list" id="serversContainer"></div>
+        </div>
+
+        <!-- التحكم بالشات الموحد -->
+        <div class="section-box">
+            <div class="box-title">التحكم بالشات الموحد وإرسال الأوامر</div>
+            <div class="chat-input-group">
+                <input type="text" id="cmdInput" placeholder="اكتب الأمر الموحد هنا لجميع البوتات (مثل /say hello)...">
+                <button class="btn-orange" style="margin-top:0; width:auto; padding: 0 28px;" onclick="sendCommand()">
+                    بث وإرسال الأمر <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+        <!-- كونسول الهكر المنفصل بالأسفل تماماً بالملي -->
+        <div class="section-box">
+            <div class="box-title">شاشة الأحداث ومراقبة البوتات (Console Log)</div>
+            <div class="console-container" id="consoleBox"></div>
+        </div>
+    </div>
+
+    <script>
+        const consoleBox = document.getElementById('consoleBox');
+        let isConnectedBefore = false;
+
+        // 🔑 دالة ذكية لقراءة الـ ID الخاص بكل شخص من رابط الصفحة تلقائياً
+        // إذا لم يكن هناك ID في الرابط، النظام يصنع له واحداً عشوائياً فوراً
+        function getRoomId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let roomId = urlParams.get('room');
+            
+            if (!roomId) {
+                // توليد معرف فريد عشوائي للشخص الجديد
+                roomId = 'user_' + Math.random().toString(36).substring(2, 7);
+                // تحديث رابط المتصفح دون إعادة تحميل الصفحة ليحفظه الشخص عنده
+                window.history.replaceState(null, '', `?room=${roomId}`);
+            }
+            return roomId;
+        }
+
+        function logToConsole(message, type = 'default') {
+            const time = new Date().toLocaleTimeString();
+            const line = document.createElement('div');
+            line.className = 'console-line';
+            if (type === 'system') line.classList.add('system');
+            if (type === 'error') line.classList.add('error');
+            line.innerText = `[${time}] ${message}`;
+            consoleBox.appendChild(line);
+            consoleBox.scrollTop = consoleBox.scrollHeight;
+        }
+
+        async function loadServers() {
+            const container = document.getElementById('serversContainer');
+            const currentRoom = getRoomId(); // جلب الغرفة الشخصية الحالية
+            
+            try {
+                // طلب السيرفرات التي تنتمي لهذه الغرفة المحددة فقط
+                const response = await fetch(`/api/servers?user=${currentRoom}`);
+                const servers = await response.json();
+                container.innerHTML = '';
+
+                if (!isConnectedBefore) {
+                    logToConsole(`تم رصد الملفات بنجاح. الغرفة الرقمية النشطة حالياً: [${currentRoom}]`, "default");
+                    logToConsole(`انسخ رابط المتصفح فوق واحفظه لتعود لقائمتك الخاصة في أي وقت!`, "system");
+                    isConnectedBefore = true;
+                }
+
+                if(!servers || servers.length === 0) {
+                    container.innerHTML = `
+                        <div class="server-card" style="justify-content: center;">
+                            <div class="status-indicator" style="color: var(--neon-green);">
+                                <div class="status-dot" style="background-color: var(--neon-green);"></div>
+                                قائمة نظيفة ومستقلة | لا توجد سيرفرات محفوظة في هذه الغرفة [${currentRoom}] حالياً
+                            </div>
+                        </div>`;
+                    return;
+                }
+
+                servers.forEach(server => {
+                    container.innerHTML += `
+                        <div class="server-card">
+                            <div class="server-info">
+                                <span class="badge">${server.type}</span>
+                                <span style="font-family: monospace;">${server.ip}:${server.port}</span>
+                                <span style="color: var(--primary-orange); font-weight:bold;">[${server.name}]</span>
+                                <div class="status-indicator" style="color: ${server.active ? 'var(--neon-green)' : 'var(--text-muted)'}">
+                                    <div class="status-dot" style="background-color: ${server.active ? 'var(--neon-green)' : 'var(--neon-red)'}"></div> 
+                                    معرّف الغرفة: ${server.owner} | الحالة: ${server.active ? 'البوت متصل باللعبة' : 'مطفأ'}
+                                </div>
+                            </div>
+                            <div class="server-actions">
+                                <button class="btn-action btn-start ${server.active ? 'active-bot' : ''}" onclick="toggleBot('${server.name}')">
+                                    ${server.active ? 'إيقاف البوت <i class="fa-solid fa-power-off"></i>' : 'تشغيل البوت <i class="fa-solid fa-bolt"></i>'}
+                                </button>
+                                <button class="btn-action btn-delete" onclick="deleteServer('${server.name}')">حذف <i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>`;
+                });
+            } catch (err) {
+                isConnectedBefore = false;
+                container.innerHTML = `
+                    <div class="server-card" style="justify-content: center; border-color: var(--neon-red); background-color: #1a0a0a;">
+                        <div class="status-indicator" style="color: var(--neon-red);">
+                            <div class="status-dot" style="background-color: var(--neon-red);"></div>
+                            جاري فحص الاتصال بقاعدة بيانات الغرف الحالية وتحميل السيرفرات...
+                        </div>
+                    </div>`;
+            }
+        }
+
+        async function addServer() {
+            const name = document.getElementById('botName').value;
+            const currentRoom = getRoomId();
+            
+            const data = {
+                user: currentRoom, // إرسال معرف الغرفة الحالية لربط البوت بها
+                name: name,
+                port: document.getElementById('serverPort').value,
+                ip: document.getElementById('serverIp').value,
+                type: document.getElementById('serverType').value
+            };
+            
+            await fetch('/api/servers', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            logToConsole(`تم بنجاح حفظ وإضافة البوت [${name}] داخل غرفتك الخاصة [${currentRoom}].`, "system");
+            loadServers();
+        }
+
+        async function toggleBot(botName) {
+            const currentRoom = getRoomId();
+            logToConsole(`جاري فحص نبض اتصال البوت [${botName}] لغرفتك الحالية...`, "system");
+            await fetch('/api/toggle-bot', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name: botName, user: currentRoom })
+            });
+            loadServers();
+        }
+
+        async function deleteServer(botName) {
+            const currentRoom = getRoomId();
+            if(!confirm(`هل أنت متأكد من مسح البوت [${botName}] من غرفتك نهائياً؟`)) return;
+            await fetch('/api/delete-server', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ name: botName, user: currentRoom })
+            });
+            logToConsole(`تم تدمير وحذف بيانات البوت [${botName}] بنجاح.`, "error");
+            loadServers();
+        }
+
+        async function sendCommand() {
+            const cmd = document.getElementById('cmdInput').value;
+            if(!cmd) return;
+            await fetch('/api/command', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ command: cmd })
+            });
+            logToConsole(`بث الأوامر الحية: تم إرسال الأمر الموحد "${cmd}" للبوتات النشطة التابعة لك.`, "system");
+            document.getElementById('cmdInput').value = '';
+        }
+
+        setInterval(loadServers, 3000);
+        loadServers();
+    </script>
+
+    <!-- كود إعلان Adsterra المخفي لتوليد الأرباح -->
+    <script src="https://profitableratecpmnetwork.com"></script>
+</body>
+</html>
